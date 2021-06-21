@@ -1,5 +1,4 @@
 const express = require("express");
-const router = express.Router();
 const bodyParser = require("body-parser");
 const urlEncodedParser = bodyParser.urlencoded();
 const UserModel = require("../models/userModel");
@@ -20,7 +19,7 @@ module.exports = (app) => {
             if (error) console.error(error);
             else {
               res.status(201);
-              res.json("User created successfuly");
+              res.send("User created successfuly");
             }
           });
         }

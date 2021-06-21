@@ -16,7 +16,9 @@ export default function Login() {
         console.log(res);
         if (res.data._id) {
           localStorage.setItem("user_id", res.data._id);
-          window.location.replace("/dashboard/" + res.data._id);
+          setTimeout(() => {
+            window.location.replace("/dashboard/" + res.data._id);
+          }, 2000);
         }
       })
       .catch((err) => {

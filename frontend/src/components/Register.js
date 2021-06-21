@@ -36,14 +36,6 @@ export default function Register() {
   return (
     <div className="register-page">
       <h1 style={{ textAlign: "center" }}>Register Page</h1>
-      {/*       {response && response.status != 201 ?
-      
-      :
-      ({response && (
-        <p>
-          Status:{response.status}/{response.data}
-        </p>
-      )}) */}
       {console.log(response)}
       {response.status !== 201 ? (
         <form style={{ textAlign: "center" }}>
@@ -54,6 +46,7 @@ export default function Register() {
               name="username"
               placeholder="Username"
               value={user.username}
+              onClick={() => setResponse("")}
               onChange={(e) => setUser({ ...user, username: e.target.value })}
             />
           </div>
@@ -64,6 +57,7 @@ export default function Register() {
               name="password"
               placeholder="Password"
               value={user.password}
+              onClick={() => setResponse("")}
               onChange={(e) => setUser({ ...user, password: e.target.value })}
             />
           </div>
@@ -72,11 +66,7 @@ export default function Register() {
             value="Create User"
             onClick={(e) => handleFormSubmit(e)}
           />
-          {response && (
-            <p>
-              Status:{response.status}/{response.data}
-            </p>
-          )}
+          {response && <p style={{ color: "red" }}>{response.data}</p>}
         </form>
       ) : (
         response && (
