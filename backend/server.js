@@ -3,7 +3,7 @@ var cors = require("cors");
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var bodyParser = require("body-parser");
-import asd from "../frontend/build";
+
 require("dotenv/config");
 
 const app = express();
