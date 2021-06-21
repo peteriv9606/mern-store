@@ -9,7 +9,7 @@ function Products(props) {
     axios
       .get("/products")
       .then((response) => {
-        console.log(response);
+        console.log("RESPONSE", response);
         setusersWithProds([...response.data]);
       })
       .catch((error) => console.log("ERROR:", error));

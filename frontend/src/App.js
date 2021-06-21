@@ -2,7 +2,6 @@ import { useState } from "react";
 import { InputGroup, FormControl } from "react-bootstrap";
 import "./App.css";
 import Products from "./components/Products";
-const axios = require("axios").default;
 function App() {
   const [filter, setFilter] = useState("");
   return (
