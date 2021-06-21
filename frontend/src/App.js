@@ -1,76 +1,28 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { InputGroup, FormControl } from "react-bootstrap";
 import "./App.css";
+import Products from "./components/Products";
+const axios = require("axios").default;
 function App() {
-  const axios = require("axios").default;
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [loggedIn, setLoggedIn] = useState(false);
-  const data = {
-    username: username,
-    password: password,
-  };
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
-
-  useEffect(() => {
-    //set login status
-    if (localStorage.getItem("auth_token")) {
-      setLoggedIn(true);
-    }
-  }, []);
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    console.log("TESTING:", window.location);
-    console.log("Submitting form...", data);
-    axios
-      .post("/users", data)
-      .then((response) => {
-        console.log(
-          "Getting server response (token)",
-          response.data.auth_token
-        );
-        if (localStorage.getItem("auth_token")) {
-          //logged in
-          localStorage.removeItem("auth_token");
-          setLoggedIn(false);
-        } else {
-          localStorage.setItem("auth_token", response.data.auth_token);
-          setLoggedIn(true);
-        }
-      })
-      .catch((error) => console.log("ERROR:", error));
-  };
-
+  const [filter, setFilter] = useState("");
   return (
     <div className="App">
-      <header className="App-header">
-        <form>
-          <label htmlFor="username" />
-          <input
-            type="text"
-            placeholder="Username"
-            name="username"
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-          />
-          <br />
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={(e) => setPassword(e.target.value)}
-            value={password}
-          ></input>
-          <input
-            type="submit"
-            value="Submit"
-            onClick={(e) => handleFormSubmit(e)}
-          />
-        </form>
-
-        <p>Logged in: {loggedIn ? "YES" : "NO"}</p>
-      </header>
+      <h1>Products:</h1>
+      <InputGroup className="m-auto pb-3 w-75 d-flex">
+        <InputGroup.Prepend>
+          <InputGroup.Text id="prepend-desc">Filter by Name:</InputGroup.Text>
+        </InputGroup.Prepend>
+        <FormControl
+          placeholder="Name"
+          aria-label="Name"
+          aria-describedby="prepend-desc"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        />
+      </InputGroup>
+      <div className="products-list">
+        <Products filter={filter} />
+      </div>
     </div>
   );
 }

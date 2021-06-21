@@ -28,6 +28,61 @@
   color: #61dafb;
 }
 
+nav {
+  padding: 15px;
+  background-color: #cecece;
+  height: fit-content;
+}
+nav > ul {
+  margin: 0 auto;
+  list-style: none;
+  display: flex;
+  font-size: 24px;
+  padding: 0;
+  align-items: center;
+  justify-content: space-around;
+}
+li > a {
+  color: black;
+  text-decoration: none;
+  transition: 0.4s;
+}
+li > a:hover {
+  text-decoration: none;
+  color: white;
+  transition: 0.4s;
+}
+
+.products-list {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 5%;
+  justify-content: space-evenly;
+}
+
+.product {
+  border: 2px solid rgba(100, 100, 100, 0.3);
+  color: black;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  width: 400px;
+  height: 250px;
+  cursor: pointer;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+}
+.product:hover {
+  transform: scale(1.02);
+  border: 1px solid rgba(100, 100, 100, 1);
+  color: black;
+  text-decoration: none;
+  -webkit-box-shadow: 5px 5px 20px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 5px 5px 20px -5px rgba(0, 0, 0, 0.1);
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
