@@ -12,6 +12,7 @@ const MONGO_URI =
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 mongoose.connect(
   MONGO_URI,
   { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
