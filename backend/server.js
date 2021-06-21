@@ -3,6 +3,7 @@ var cors = require("cors");
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var bodyParser = require("body-parser");
+import asd from "../frontend/build";
 require("dotenv/config");
 
 const app = express();
@@ -50,6 +51,16 @@ const UserSchema = Schema({
 //define the product model
 const ProductModel = mongoose.model("Product", ProductSchema);
 const UserModel = mongoose.model("User", UserSchema);
+
+// Accessing the path module
+const path = require("path");
+//Stuff from tutorials to try to connect to heroku
+// Step 1:
+app.use(express.static(path.resolve(__dirname, "../frontend/build")));
+// Step 2:
+app.get("*", function (request, response) {
+  response.sendFile(path.resolve(__dirname, "../frontend/build", "index.html"));
+});
 
 app.get("/products/", urlEncodedParser, (req, res) => {
   //get all products from all users
