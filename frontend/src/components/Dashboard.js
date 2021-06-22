@@ -23,17 +23,19 @@ export default function Dashboard(props) {
   const [toEdit, setToEdit] = useState(null);
   useEffect(() => {
     //triggered on server response changes - delete product,
-    console.log(window.location.pathname);
-    axios.get(window.location.pathname).then((res) => {
-      console.log(res.data);
-      setUser(res.data);
-    });
+    updateUserData();
   }, []);
   const updateUserData = () => {
-    axios.get(window.location.pathname).then((res) => {
-      console.log(res.data);
-      setUser(res.data);
-    });
+    axios
+      .get(window.location.pathname, {
+        params: {
+          loggedIn: localStorage.getItem("loggedIn"),
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setUser(res.data);
+      });
   };
   const discardInput = () => {
     setNewProduct({ name: "", description: "", price: "" });

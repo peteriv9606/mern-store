@@ -4,6 +4,7 @@ import App from "../App";
 import Login from "./Login";
 import Register from "./Register";
 import Dashboard from "./Dashboard";
+import NoEntry from "./NoEntry";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -13,6 +14,7 @@ function Navbar() {
 
   useEffect(() => {
     if (localStorage.getItem("user_id")) {
+      console.log("Logged in:", localStorage.getItem("user_id"));
       setCurrId(localStorage.getItem("user_id"));
       axios
         .get("/user/" + localStorage.getItem("user_id"))
@@ -26,7 +28,17 @@ function Navbar() {
   }, []);
   const handleLogout = () => {
     localStorage.removeItem("user_id");
+    localStorage.removeItem("loggedIn");
     setCurrId(null);
+  };
+  const checkLoggedStatus = () => {
+    alert(window.location.pathname);
+    if (
+      localStorage.getItem("user_id") &&
+      localStorage.getItem("loggedIn") === true
+    ) {
+      alert("Not found");
+    } else window.location.replace(window.location.origin);
   };
   return (
     <Router>
@@ -76,8 +88,13 @@ function Navbar() {
           <Route path="/register">
             <Register />
           </Route>
-          <Route path={"/dashboard/" + user._id}>
-            <Dashboard props={user} />
+          <Route
+            exact
+            path={"/dashboard/" + user._id}
+            children={<Dashboard props={user} />}
+          ></Route>
+          <Route path="*">
+            <NoEntry />
           </Route>
         </Switch>
       </div>

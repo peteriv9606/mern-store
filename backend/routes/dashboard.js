@@ -1,20 +1,24 @@
 const express = require("express");
-
+const bodyParser = require("body-parser");
+const urlEncodedParser = bodyParser.urlencoded();
 const UserModel = require("../models/userModel");
 
 module.exports = (app) => {
   app
     .route("/dashboard/:_id")
-    .get((req, res) => {
+    .get(urlEncodedParser, (req, res) => {
       console.log("GET /dashboard/:_id");
-      UserModel.findById(req.params._id, (err, user) => {
-        if (err) console.error(err);
-        else {
-          if (user) {
-            res.send(user);
+      console.log(req.query, typeof req.query);
+      if (req.query && req.query.loggedIn === "true") {
+        UserModel.findById(req.params._id, (err, user) => {
+          if (err) console.error(err);
+          else {
+            if (user) {
+              res.send(user);
+            }
           }
-        }
-      });
+        });
+      } else res.send("Nice try..");
     })
     .post((req, res) => {
       //Add new product to current user's products array
