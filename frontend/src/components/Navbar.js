@@ -5,7 +5,13 @@ import Login from "./Login";
 import Register from "./Register";
 import Dashboard from "./Dashboard";
 import NoEntry from "./NoEntry";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from "react-router-dom";
 import axios from "axios";
 
 function Navbar() {
@@ -50,7 +56,7 @@ function Navbar() {
                 <Link to="/">Home</Link>
               </li>
               <li>
-                <Link to={"/dashboard/" + user._id}>
+                <Link to={`/dashboard/${user._id}`}>
                   Welcome, {user.username}!
                 </Link>
               </li>
@@ -80,7 +86,7 @@ function Navbar() {
 
         <Switch>
           <Route exact path="/">
-            <App props={user} />
+            <App />
           </Route>
           <Route path="/login">
             <Login />
@@ -88,11 +94,16 @@ function Navbar() {
           <Route path="/register">
             <Register />
           </Route>
-          <Route
-            exact
-            path={"/dashboard/" + user._id}
-            children={<Dashboard props={user} />}
-          ></Route>
+          {window.localStorage.getItem("loggedIn") &&
+          window.localStorage.getItem("user_id") === user._id ? (
+            <Route
+              exact
+              path={`/dashboard/:_id`}
+              children={<Dashboard props={user} />}
+            ></Route>
+          ) : (
+            <Redirect to="/" />
+          )}
           <Route path="*">
             <NoEntry />
           </Route>

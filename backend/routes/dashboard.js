@@ -1,14 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const urlEncodedParser = bodyParser.urlencoded();
 const UserModel = require("../models/userModel");
 
 module.exports = (app) => {
   app
     .route("/dashboard/:_id")
-    .get(urlEncodedParser, (req, res) => {
+    .get((req, res) => {
       console.log("GET /dashboard/:_id");
-      console.log(req.query, typeof req.query);
+      console.log(req.query, req.params);
       if (req.query && req.query.loggedIn === "true") {
         UserModel.findById(req.params._id, (err, user) => {
           if (err) console.error(err);
@@ -18,11 +17,14 @@ module.exports = (app) => {
             }
           }
         });
-      } else res.send("Nice try..");
+      } else {
+        res.redirect("/");
+      }
     })
     .post((req, res) => {
       //Add new product to current user's products array
       console.log("POST /dashboard/:_id");
+      console.log(req.body, req.params);
       //req.params - gets current user's _id
       //req.body - gets new item values
       UserModel.findByIdAndUpdate(
@@ -51,5 +53,30 @@ module.exports = (app) => {
           }
         }
       );
+    })
+    .put((req, res) => {
+      console.log("PUT /dashboard/:id");
+      console.log(req.body, req.params);
+      UserModel.findById(req.params._id, (err, user) => {
+        if (err) console.error(err);
+        else {
+          if (user) {
+            //user found
+            user.products.map((prod) => {
+              if (prod._id == req.body.product._id) {
+                prod.name = req.body.product.name;
+                prod.description = req.body.product.description;
+                prod.price = req.body.product.price;
+                user.save((error, data) => {
+                  if (error) console.error(error);
+                  else {
+                    res.send(data);
+                  }
+                });
+              }
+            });
+          } else res.send("User not found");
+        }
+      });
     });
 };

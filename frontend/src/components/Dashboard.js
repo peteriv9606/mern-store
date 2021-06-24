@@ -8,26 +8,31 @@ import {
   Form,
   InputGroup,
   Card,
+  Modal,
 } from "react-bootstrap";
+import { useParams } from "react-router";
 import axios from "axios";
-export default function Dashboard(props) {
+export default function Dashboard() {
+  const { _id } = useParams();
   const [user, setUser] = useState("");
+  const [show, setShow] = useState(false);
   //define state for new product
   const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
     price: "",
   });
+  const [editProduct, setEditProduct] = useState("");
+  const urlparams = useParams();
 
-  //define state for edit product
-  const [toEdit, setToEdit] = useState(null);
   useEffect(() => {
-    //triggered on server response changes - delete product,
+    //triggered on inital load
     updateUserData();
   }, []);
   const updateUserData = () => {
+    // FIX THIS  : try using useParams
     axios
-      .get(window.location.pathname, {
+      .get(`/dashboard/${urlparams._id}`, {
         params: {
           loggedIn: localStorage.getItem("loggedIn"),
         },
@@ -44,7 +49,7 @@ export default function Dashboard(props) {
     if (newProduct.name && newProduct.price) {
       //both values are present -> make the POST request
       axios
-        .post(window.location.pathname, newProduct)
+        .post(`/dashboard/${_id}`, newProduct)
         .then((response) => {
           console.log(response);
           if (response.status === 200) {
@@ -63,7 +68,7 @@ export default function Dashboard(props) {
     if (window.confirm("Are you sure you want to delete this item?")) {
       axios({
         method: "delete",
-        url: window.location.pathname,
+        url: `/dashboard/${urlparams._id}`,
         data: {
           product_id: id,
         },
@@ -75,8 +80,99 @@ export default function Dashboard(props) {
         .catch((err) => console.log(err));
     }
   };
+
+  const Edit = (prod) => {
+    console.log("Should show Modal for id:", prod._id);
+    setEditProduct(prod);
+    setShow(true);
+  };
+  const confirmEdit = () => {
+    if (window.confirm("Are you sure you made the correct updates?")) {
+      axios({
+        method: "put",
+        url: `/dashboard/${urlparams._id}`,
+        data: {
+          product: editProduct,
+        },
+      })
+        .then((response) => {
+          console.log(response.data);
+          setUser(response.data);
+          alert("Product Updated Successfuly!");
+          setShow(false);
+          updateUserData();
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+
   return (
     <div>
+      <Modal
+        show={show}
+        onHide={() => setShow(false)}
+        dialogClassName="modal-90w"
+        aria-labelledby="edit-modal"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="edit-modal">Edit: {editProduct.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <label htmlFor="id">Product ID:</label>
+          <p name="id" className="p-0 mb-2">
+            <i>{editProduct._id}</i>
+          </p>
+          <label htmlFor="name">Product Name:</label>
+          <br />
+          <input
+            name="name"
+            className="w-100 p-2"
+            type="text"
+            value={editProduct.name}
+            onChange={(e) =>
+              setEditProduct({ ...editProduct, name: e.target.value })
+            }
+          />
+          <br />
+          <label htmlFor="description">Product Description:</label>
+          <br />
+          <textarea
+            name="description"
+            className="w-100 p-2"
+            value={editProduct.description}
+            onChange={(e) =>
+              setEditProduct({ ...editProduct, description: e.target.value })
+            }
+          />
+          <br />
+          <label htmlFor="price">Product Price:</label>
+          <br />
+          <input
+            name="price"
+            className="w-100 p-2"
+            type="number"
+            value={editProduct.price}
+            onChange={(e) =>
+              setEditProduct({ ...editProduct, price: e.target.value })
+            }
+          />
+          <br />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="btn btn-danger"
+            onClick={() => {
+              setEditProduct("");
+              setShow(false);
+            }}
+          >
+            Discard Changes
+          </Button>
+          <Button className="btn btn-success" onClick={() => confirmEdit()}>
+            Confirm Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <Tab.Container defaultActiveKey="view-all">
         <Row className="m-0">
           <Col sm={3} className="p-0 text-center border-right border-light">
@@ -119,7 +215,11 @@ export default function Dashboard(props) {
                             </Card.Subtitle>
                             <Card.Text>{prod.description}</Card.Text>
                             <div className="w-100 p-3 m-0 d-l-flex d-block justify-content-between text-center">
-                              <Button variant="primary" className="m-2">
+                              <Button
+                                variant="primary"
+                                className="m-2"
+                                onClick={() => Edit(prod)}
+                              >
                                 Edit
                               </Button>
                               <Button

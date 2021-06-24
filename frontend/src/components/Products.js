@@ -10,7 +10,11 @@ function Products(props) {
       .get("/products")
       .then((response) => {
         console.log("RESPONSE", response);
-        setusersWithProds([...response.data]);
+        console.log("res.data type", typeof response.data);
+        if (typeof response.data == "object") {
+          console.log("res.data is an object");
+          setusersWithProds([...response.data]);
+        }
       })
       .catch((error) => console.log("ERROR:", error));
   }, []);
@@ -20,15 +24,39 @@ function Products(props) {
       console.log("set filter", props.filter);
     }
   });
-  return usersWithProds
-    ? usersWithProds.map((user) => {
-        return (
-          <>
-            {user.products.map((prod) => {
-              return filter !== "" ? (
-                prod.name.toLowerCase().includes(filter.toLowerCase()) ? (
+  try {
+    {
+      console.log("USERS WITH PRODS: ", usersWithProds);
+    }
+    return usersWithProds
+      ? usersWithProds.map((user) => {
+          return (
+            <>
+              {user.products.map((prod, index) => {
+                return filter !== "" ? (
+                  prod.name.toLowerCase().includes(filter.toLowerCase()) ? (
+                    <>
+                      <a className="product" key={index}>
+                        <h1 key={prod._id} className="w-100 mb-4 p-0">
+                          {prod.name}
+                        </h1>
+                        <p className="w-100 mb-4 p-0 text-left">
+                          {prod.description}
+                        </p>
+                        <p className="w-100 mb-4 p-0 text-right">
+                          Price: ${prod.price}
+                        </p>
+                        <p className="w-100 mb-4 p-0 text-left">
+                          <i>Listed By: {user.username}</i>
+                        </p>
+                      </a>
+                    </>
+                  ) : (
+                    ""
+                  )
+                ) : (
                   <>
-                    <a className="product">
+                    <a className="product" key={index}>
                       <h1 key={prod._id} className="w-100 mb-4 p-0">
                         {prod.name}
                       </h1>
@@ -43,32 +71,22 @@ function Products(props) {
                       </p>
                     </a>
                   </>
-                ) : (
-                  ""
-                )
-              ) : (
-                <>
-                  <a className="product">
-                    <h1 key={prod._id} className="w-100 mb-4 p-0">
-                      {prod.name}
-                    </h1>
-                    <p className="w-100 mb-4 p-0 text-left">
-                      {prod.description}
-                    </p>
-                    <p className="w-100 mb-4 p-0 text-right">
-                      Price: ${prod.price}
-                    </p>
-                    <p className="w-100 mb-4 p-0 text-left">
-                      <i>Listed By: {user.username}</i>
-                    </p>
-                  </a>
-                </>
-              );
-            })}
-          </>
-        );
-      })
-    : "Loading...";
+                );
+              })}
+            </>
+          );
+        })
+      : "Loading...";
+  } catch (error) {
+    return (
+      <div>
+        {console.log("Should return the Catch statement error", error)}
+        <p>An error occured while trying to fetch the data</p>
+        <br />
+        <p>Error: {error}</p>
+      </div>
+    );
+  }
 }
 
 export default Products;
