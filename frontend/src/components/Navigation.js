@@ -38,6 +38,8 @@ function Navigation() {
     localStorage.removeItem("user_id");
     localStorage.removeItem("loggedIn");
     setCurrId(null);
+    setUser("User");
+    console.log("Should be logged out");
   };
   const checkLoggedStatus = () => {
     alert(window.location.pathname);
@@ -75,7 +77,12 @@ function Navigation() {
                       Profile
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item as={Link} to="/logout" key="2">
+                    <NavDropdown.Item
+                      as={Link}
+                      to="/logout"
+                      key="2"
+                      onClick={() => handleLogout()}
+                    >
                       Logout
                     </NavDropdown.Item>
                   </>
@@ -104,8 +111,7 @@ function Navigation() {
           <Route path="/register">
             <Register />
           </Route>
-          <Route exact path="/logout">
-            {() => handleLogout()}
+          <Route path="/logout">
             <Redirect to="/" />
           </Route>
           {window.localStorage.getItem("loggedIn") &&
