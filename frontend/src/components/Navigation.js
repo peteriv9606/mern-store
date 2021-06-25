@@ -54,7 +54,6 @@ function Navigation() {
           <Navbar.Toggle aria-controls="nav-collapse" />
           <Navbar.Collapse id="nav-collapse">
             <Nav className="ml-auto">
-              <Nav.Link href="/">Home</Nav.Link>
               {console.log("USER:", user.username)}
               <NavDropdown title={user.username ? user.username : "Profile"}>
                 {user.username ? (
