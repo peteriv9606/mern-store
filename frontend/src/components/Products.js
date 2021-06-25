@@ -4,6 +4,7 @@ import "../App.css";
 function Products(props) {
   const [usersWithProds, setusersWithProds] = useState(null);
   const [filter, setFilter] = useState("");
+
   useEffect(() => {
     console.log("useEffect run");
     axios
@@ -18,22 +19,20 @@ function Products(props) {
       })
       .catch((error) => console.log("ERROR:", error));
   }, []);
+
   useEffect(() => {
     if (filter !== props.filter) {
       setFilter(props.filter);
       console.log("set filter", props.filter);
     }
-  });
+  }, [filter]);
   try {
-    {
-      console.log("USERS WITH PRODS: ", usersWithProds);
-    }
     return usersWithProds
       ? usersWithProds.map((user) => {
           return user.products.map((prod) => {
             return filter !== "" ? (
               prod.name.toLowerCase().includes(filter.toLowerCase()) ? (
-                <a className="product" key={prod._id}>
+                <a className="product" href="#product" key={prod._id}>
                   <h1
                     className="w-100 mb-4 p-0 text-left"
                     style={{
@@ -64,7 +63,7 @@ function Products(props) {
                 ""
               )
             ) : (
-              <a className="product" key={prod._id}>
+              <a className="product" href="#product" key={prod._id}>
                 <h1
                   className="w-100 mb-4 p-0 text-left"
                   style={{

@@ -17,13 +17,11 @@ import "../App.css";
 import axios from "axios";
 
 function Navigation() {
-  const [currId, setCurrId] = useState(null);
   const [user, setUser] = useState("User");
 
   useEffect(() => {
     if (localStorage.getItem("user_id")) {
       console.log("Logged in:", localStorage.getItem("user_id"));
-      setCurrId(localStorage.getItem("user_id"));
       axios
         .get("/user/" + localStorage.getItem("user_id"))
         .then((res) => {
@@ -37,19 +35,11 @@ function Navigation() {
   const handleLogout = () => {
     localStorage.removeItem("user_id");
     localStorage.removeItem("loggedIn");
-    setCurrId(null);
+
     setUser("User");
     console.log("Should be logged out");
   };
-  const checkLoggedStatus = () => {
-    alert(window.location.pathname);
-    if (
-      localStorage.getItem("user_id") &&
-      localStorage.getItem("loggedIn") === true
-    ) {
-      alert("Not found");
-    } else window.location.replace(window.location.origin);
-  };
+
   return (
     <Router>
       <div>

@@ -10,16 +10,13 @@ module.exports = (app) => {
       console.log(req.query, req.params);
       if (req.query && req.query.loggedIn === "true") {
         UserModel.findById(req.params._id, (err, user) => {
-          if (err) console.error(err);
-          else {
-            if (user) {
-              res.send(user);
-            }
+          if (err) {
+            console.error(err);
+            return 0;
           }
+          if (user) res.send(user);
         });
-      } else {
-        res.redirect("/");
-      }
+      } else res.redirect("/");
     })
     .post((req, res) => {
       //Add new product to current user's products array
@@ -32,10 +29,10 @@ module.exports = (app) => {
         { $push: { products: req.body } },
         { new: true, upsert: true },
         (err, doc) => {
-          if (err) console.error(err);
-          else {
-            res.send(doc);
-          }
+          if (err) {
+            console.error(err);
+            return 0;
+          } else res.send(doc);
         }
       );
     })
@@ -47,10 +44,10 @@ module.exports = (app) => {
         { $pull: { products: { _id: req.body.product_id } } },
         { new: true, upsert: true },
         (err, doc) => {
-          if (err) console.error(err);
-          else {
-            res.send(doc);
-          }
+          if (err) {
+            console.error(err);
+            return 0;
+          } else res.send(doc);
         }
       );
     })
@@ -68,10 +65,10 @@ module.exports = (app) => {
                 prod.description = req.body.product.description;
                 prod.price = req.body.product.price;
                 user.save((error, data) => {
-                  if (error) console.error(error);
-                  else {
-                    res.send(data);
-                  }
+                  if (error) {
+                    console.error(error);
+                    return 0;
+                  } else res.send(data);
                 });
               }
             });
