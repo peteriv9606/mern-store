@@ -4,6 +4,7 @@ import "./App.css";
 import Products from "./components/Products";
 function App() {
   const [filter, setFilter] = useState("");
+
   return (
     <div className="App">
       <InputGroup className="m-auto py-3 w-75 d-flex">

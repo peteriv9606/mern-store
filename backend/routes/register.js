@@ -1,29 +1,22 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const urlEncodedParser = bodyParser.urlencoded();
+const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
 module.exports = (app) => {
-  app.post("/register", urlEncodedParser, (req, res) => {
+  app.post("/register", urlEncodedParser, async (req, res) => {
     console.log("POST /register");
-    UserModel.find({ username: req.body.username }, (err, data) => {
-      if (err) console.error(err);
-      else {
-        if (data[0]) {
-          //user found?
-          res.status(200);
-          res.send("Username already taken");
-        } else {
-          //user NOT found
-          const newUser = UserModel(req.body);
-          newUser.save((error) => {
-            if (error) console.error(error);
-            else {
-              res.status(201);
-              res.send("User created successfuly");
-            }
-          });
-        }
-      }
-    });
+    const existing = await UserModel.findOne({ username: req.body.username });
+    if (existing) {
+      res.status(200).send("Username Already Taken");
+      return 0;
+    }
+    //user not found - create a new one
+    const user = UserModel(req.body);
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+    user
+      .save()
+      .then((doc) => res.status(201).send("User Created Successfuly!"));
   });
 };

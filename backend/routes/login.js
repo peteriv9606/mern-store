@@ -1,25 +1,20 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const urlEncodedParser = bodyParser.urlencoded();
+const bcrypt = require("bcrypt");
 const UserModel = require("../models/userModel");
 module.exports = (app) => {
-  app.post("/login", urlEncodedParser, (req, res) => {
+  app.post("/login", urlEncodedParser, async (req, res) => {
     console.log("POST /login");
-    console.log(req.body);
-    UserModel.findOne({ username: req.body.username }, (err, user) => {
-      if (err) console.error(err);
-      else {
-        if (user) {
-          //user found
-          if (user.password === req.body.password) {
-            res.send(user);
-          } else {
-            res.send("incorrect password");
-          }
-        } else {
-          res.send("username not found");
-        }
-      }
-    });
+    const user = await UserModel.findOne({ username: req.body.username });
+    if (user) {
+      const isValidPass = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+      if (isValidPass) {
+        res.status(200).send(user);
+      } else res.status(200).send("Invalid password");
+    } else res.status(200).send("User not found.");
   });
 };
