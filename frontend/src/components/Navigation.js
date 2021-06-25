@@ -21,7 +21,6 @@ function Navigation() {
 
   useEffect(() => {
     if (localStorage.getItem("user_id")) {
-      console.log("Logged in:", localStorage.getItem("user_id"));
       axios
         .get("/user/" + localStorage.getItem("user_id"))
         .then((res) => {

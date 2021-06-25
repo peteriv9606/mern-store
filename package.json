@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "a MERN store app",
   "main": "index.js",
+  "engines": {
+    "node": "14.6.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd frontend && npm run build",
@@ -33,6 +36,7 @@
   },
   "homepage": "https://github.com/peteriv9606/mern-store#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "concurrently": "^6.2.0",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",

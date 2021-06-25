@@ -7,7 +7,6 @@ function Products(props) {
   const [filter, setFilter] = useState(props.filter);
 
   useEffect(() => {
-    console.log("Fetching Products");
     axios
       .get("/products")
       .then((response) => {
