@@ -6,8 +6,7 @@ function App() {
   const [filter, setFilter] = useState("");
   return (
     <div className="App">
-      <h1>Products:</h1>
-      <InputGroup className="m-auto pb-3 w-75 d-flex">
+      <InputGroup className="m-auto py-3 w-75 d-flex">
         <InputGroup.Prepend>
           <InputGroup.Text id="prepend-desc">Filter by Name:</InputGroup.Text>
         </InputGroup.Prepend>

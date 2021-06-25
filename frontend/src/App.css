@@ -1,18 +1,3 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -24,39 +9,12 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-nav {
-  padding: 15px;
-  background-color: #cecece;
-  height: fit-content;
-}
-nav > ul {
-  margin: 0 auto;
-  list-style: none;
-  display: flex;
-  font-size: 24px;
-  padding: 0;
-  align-items: center;
-  justify-content: space-around;
-}
-li > a {
-  color: black;
-  text-decoration: none;
-  transition: 0.4s;
-}
-li > a:hover {
-  text-decoration: none;
-  color: white;
-  transition: 0.4s;
-}
-
 .products-list {
   display: flex;
   flex-wrap: wrap;
+  overflow-y: scroll;
   margin: 0 5%;
+  height: calc(100vh - 130px);
   justify-content: space-evenly;
 }
 
@@ -66,7 +24,8 @@ li > a:hover {
   margin: 10px;
   padding: 10px;
   border-radius: 10px;
-  width: 400px;
+  width: 300px;
+  min-width: 265px;
   height: 250px;
   cursor: pointer;
   display: flex;
@@ -83,11 +42,11 @@ li > a:hover {
   box-shadow: 5px 5px 20px -5px rgba(0, 0, 0, 0.1);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+.dropdown-menu.show {
+  margin: 0 -50px !important;
+}
+@media only screen and (max-width: 992px) {
+  .dropdown-menu.show {
+    margin: 0 10px !important;
   }
 }

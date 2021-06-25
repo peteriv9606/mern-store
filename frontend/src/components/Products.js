@@ -30,51 +30,69 @@ function Products(props) {
     }
     return usersWithProds
       ? usersWithProds.map((user) => {
-          return (
-            <>
-              {user.products.map((prod, index) => {
-                return filter !== "" ? (
-                  prod.name.toLowerCase().includes(filter.toLowerCase()) ? (
-                    <>
-                      <a className="product" key={index}>
-                        <h1 key={prod._id} className="w-100 mb-4 p-0">
-                          {prod.name}
-                        </h1>
-                        <p className="w-100 mb-4 p-0 text-left">
-                          {prod.description}
-                        </p>
-                        <p className="w-100 mb-4 p-0 text-right">
-                          Price: ${prod.price}
-                        </p>
-                        <p className="w-100 mb-4 p-0 text-left">
-                          <i>Listed By: {user.username}</i>
-                        </p>
-                      </a>
-                    </>
-                  ) : (
-                    ""
-                  )
-                ) : (
-                  <>
-                    <a className="product" key={index}>
-                      <h1 key={prod._id} className="w-100 mb-4 p-0">
-                        {prod.name}
-                      </h1>
-                      <p className="w-100 mb-4 p-0 text-left">
-                        {prod.description}
-                      </p>
-                      <p className="w-100 mb-4 p-0 text-right">
-                        Price: ${prod.price}
-                      </p>
-                      <p className="w-100 mb-4 p-0 text-left">
-                        <i>Listed By: {user.username}</i>
-                      </p>
-                    </a>
-                  </>
-                );
-              })}
-            </>
-          );
+          return user.products.map((prod) => {
+            return filter !== "" ? (
+              prod.name.toLowerCase().includes(filter.toLowerCase()) ? (
+                <a className="product" key={prod._id}>
+                  <h1
+                    className="w-100 mb-4 p-0 text-left"
+                    style={{
+                      fontSize: "24px",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {prod.name}
+                  </h1>
+                  <p
+                    className="w-100 mb-4 p-0 text-left"
+                    style={{
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "wrap",
+                    }}
+                  >
+                    <i>{prod.description}</i>
+                  </p>
+                  <p className="w-100 mb-4 p-0 text-center">${prod.price}</p>
+                  <p className="w-100 m-0 p-0 text-left">
+                    <i>Listed By: {user.username}</i>
+                  </p>
+                </a>
+              ) : (
+                ""
+              )
+            ) : (
+              <a className="product" key={prod._id}>
+                <h1
+                  className="w-100 mb-4 p-0 text-left"
+                  style={{
+                    fontSize: "24px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {prod.name}
+                </h1>
+                <p
+                  className="w-100 mb-4 p-0 text-left"
+                  style={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "wrap",
+                  }}
+                >
+                  <i>{prod.description}</i>
+                </p>
+                <p className="w-100 mb-4 p-0 text-center">${prod.price}</p>
+                <p className="w-100 m-0 p-0 text-left">
+                  <i>Listed By: {user.username}</i>
+                </p>
+              </a>
+            );
+          });
         })
       : "Loading...";
   } catch (error) {
