@@ -9,7 +9,8 @@ Register, login, add new product, delete product.(no password encryption yet!!! 
 If you do not want to register, you can use username: 1 and password 1 to login.
 
 
-#let's build and run this
+# let's build and run this
+
 /You need Node.js to run this program/
   1. Download or clone this repo;
   2. Go to main directory and type in console "npm install";
