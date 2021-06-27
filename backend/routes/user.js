@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const UserModel = require("../models/userModel");
+const UserModel = require("../models/UserModel");
 module.exports = (app) => {
   app.get("/user/:_id", (req, res) => {
     console.log(req.params);

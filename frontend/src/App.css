@@ -12,7 +12,6 @@
 .products-list {
   display: flex;
   flex-wrap: wrap;
-  overflow-y: scroll;
   margin: 0 5%;
   height: calc(100vh - 130px);
   justify-content: space-evenly;
@@ -57,6 +56,11 @@
   -webkit-box-shadow: 15px 15px 15px -10px rgba(0, 0, 0, 0.38);
   -moz-box-shadow: 15px 15px 15px -10px rgba(0, 0, 0, 0.38);
   box-shadow: 15px 15px 15px -10px rgba(0, 0, 0, 0.38);
+}
+
+.modal.show .modal-dialog {
+  height: calc(100vh - 60px);
+  display: flex;
 }
 
 .dropdown-menu.show {

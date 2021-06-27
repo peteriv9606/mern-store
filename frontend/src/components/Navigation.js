@@ -5,6 +5,7 @@ import Login from "./Login";
 import Register from "./Register";
 import Dashboard from "./Dashboard";
 import NoEntry from "./NoEntry";
+import Product from "./Product";
 import {
   BrowserRouter as Router,
   Switch,
@@ -41,80 +42,81 @@ function Navigation() {
 
   return (
     <Router>
-      <div>
-        <Navbar
-          collapseOnSelect="true"
-          bg="dark"
-          variant="dark"
-          expand="lg"
-          sticky="top"
-        >
-          <Navbar.Brand href="/">MERN-Shop</Navbar.Brand>
-          <Navbar.Toggle aria-controls="nav-collapse" />
-          <Navbar.Collapse id="nav-collapse">
-            <Nav className="ml-auto">
-              {console.log("USER:", user.username)}
-              <NavDropdown title={user.username ? user.username : "Profile"}>
-                {user.username ? (
-                  <>
-                    <NavDropdown.Item
-                      as={Link}
-                      to={`/dashboard/${user._id}`}
-                      key="1"
-                    >
-                      Profile
-                    </NavDropdown.Item>
-                    <NavDropdown.Divider />
-                    <NavDropdown.Item
-                      as={Link}
-                      to="/logout"
-                      key="2"
-                      onClick={() => handleLogout()}
-                    >
-                      Logout
-                    </NavDropdown.Item>
-                  </>
-                ) : (
-                  <>
-                    <NavDropdown.Item as={Link} to="/login" key="3">
-                      Login
-                    </NavDropdown.Item>
-                    <NavDropdown.Item as={Link} to="/register" key="4">
-                      Register
-                    </NavDropdown.Item>
-                  </>
-                )}
-              </NavDropdown>
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
+      <Navbar
+        collapseOnSelect="true"
+        bg="dark"
+        variant="dark"
+        expand="lg"
+        sticky="top"
+      >
+        <Navbar.Brand href="/">MERN-Shop</Navbar.Brand>
+        <Navbar.Toggle aria-controls="nav-collapse" />
+        <Navbar.Collapse id="nav-collapse">
+          <Nav className="ml-auto">
+            {console.log("USER:", user.username)}
+            <NavDropdown title={user.username ? user.username : "Profile"}>
+              {user.username ? (
+                <>
+                  <NavDropdown.Item
+                    as={Link}
+                    to={`/dashboard/${user._id}`}
+                    key="1"
+                  >
+                    Profile
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item
+                    as={Link}
+                    to="/logout"
+                    key="2"
+                    onClick={() => handleLogout()}
+                  >
+                    Logout
+                  </NavDropdown.Item>
+                </>
+              ) : (
+                <>
+                  <NavDropdown.Item as={Link} to="/login" key="3">
+                    Login
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/register" key="4">
+                    Register
+                  </NavDropdown.Item>
+                </>
+              )}
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
 
-        <Switch>
-          <Route exact path="/">
-            <App />
+      <Switch>
+        <Route exact path="/">
+          <App />
+        </Route>
+        <Route path="/product/:_id">
+          <Product />
+        </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
+        <Route path="/register">
+          <Register />
+        </Route>
+        <Route path="/logout">
+          <Redirect to="/" />
+        </Route>
+        {window.localStorage.getItem("loggedIn") &&
+        window.localStorage.getItem("user_id") === user._id ? (
+          <Route exact path={`/dashboard/:_id`}>
+            <Dashboard props={user} />
           </Route>
-          <Route path="/login">
-            <Login />
-          </Route>
-          <Route path="/register">
-            <Register />
-          </Route>
-          <Route path="/logout">
-            <Redirect to="/" />
-          </Route>
-          {window.localStorage.getItem("loggedIn") &&
-          window.localStorage.getItem("user_id") === user._id ? (
-            <Route exact path={`/dashboard/:_id`}>
-              <Dashboard props={user} />
-            </Route>
-          ) : (
-            <Redirect to="/" />
-          )}
-          <Route path="*">
-            <NoEntry />
-          </Route>
-        </Switch>
-      </div>
+        ) : (
+          <Redirect to="/" />
+        )}
+        <Route path="*">
+          <NoEntry />
+        </Route>
+      </Switch>
     </Router>
   );
 }

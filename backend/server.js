@@ -15,7 +15,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 mongoose.connect(
   MONGO_URI,
-  { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true },
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: true,
+  },
   (err) => {
     if (!err) console.log("Connection to db successful!");
   }
@@ -26,17 +31,21 @@ require("./routes/dashboard")(app);
 require("./routes/login")(app);
 require("./routes/register")(app);
 require("./routes/products")(app);
+require("./routes/product")(app);
+require("./routes/message")(app);
 
 // Accessing the path module
 const path = require("path");
 //Stuff from tutorials to try to connect to heroku
 // Step 1:
+
+/* 
 app.use(express.static(path.resolve(__dirname, "../frontend/build")));
 // Step 2:
 app.get("*", function (request, response) {
   console.log("SERVER REQUEST FROM FRONTEND *");
   response.sendFile(path.resolve(__dirname, "../frontend/build", "index.html"));
-});
+}); */
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {

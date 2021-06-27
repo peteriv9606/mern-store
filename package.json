@@ -15,7 +15,7 @@
     "heroku-postbuild": "npm run install-frontend && npm run build",
     "frontend": "cd frontend && npm start",
     "backend": "cd backend && npm start",
-    "start": "concurrently --kill-others-on-fail \"npm run backend\" \"npm run frontend\""
+    "start": "concurrently --kill-others \"npm run backend\" \"npm run frontend\""
   },
   "repository": {
     "type": "git",

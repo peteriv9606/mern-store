@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const UserModel = require("../models/userModel");
+const UserModel = require("../models/UserModel");
 
 module.exports = (app) => {
   app
@@ -54,6 +54,7 @@ module.exports = (app) => {
     .put((req, res) => {
       console.log("PUT /dashboard/:id");
       console.log(req.body, req.params);
+      const product = req.body.product;
       UserModel.findById(req.params._id, (err, user) => {
         if (err) console.error(err);
         else {
@@ -61,9 +62,11 @@ module.exports = (app) => {
             //user found
             user.products.map((prod) => {
               if (prod._id == req.body.product._id) {
-                prod.name = req.body.product.name;
-                prod.description = req.body.product.description;
-                prod.price = req.body.product.price;
+                prod.name = product.name;
+                prod.description = product.description;
+                prod.price = product.price;
+                prod.discountedPrice = product.discountedPrice;
+                prod.lastUpdated = product.lastUpdated;
                 user.save((error, data) => {
                   if (error) {
                     console.error(error);

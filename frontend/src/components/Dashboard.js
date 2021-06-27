@@ -7,7 +7,6 @@ import {
   Button,
   Form,
   InputGroup,
-  Card,
   Modal,
 } from "react-bootstrap";
 import { useParams } from "react-router";
@@ -16,13 +15,21 @@ export default function Dashboard() {
   const { _id } = useParams();
   const [user, setUser] = useState("");
   const [show, setShow] = useState(false);
+  const [newMessage, setNewMessage] = useState({
+    userId: "",
+    message: "",
+    date: "",
+  });
   //define state for new product
-  const [newProduct, setNewProduct] = useState({
+  const [product, setProduct] = useState({
     name: "",
     description: "",
-    price: "",
+    price: 0,
+    discountedPrice: 0,
+    uploadDate: null,
+    lastUpdated: null,
   });
-  const [editProduct, setEditProduct] = useState("");
+
   const urlparams = useParams();
 
   useEffect(() => {
@@ -42,20 +49,28 @@ export default function Dashboard() {
         setUser(res.data);
       });
   };
-  const discardInput = () => {
-    setNewProduct({ name: "", description: "", price: "" });
+  const discardProduct = () => {
+    setProduct({
+      name: "",
+      description: "",
+      price: 0,
+      discountedPrice: 0,
+      uploadDate: "",
+      lastUpdated: "",
+    });
   };
-  const addNewProduct = () => {
-    if (newProduct.name && newProduct.price) {
+  const addproduct = () => {
+    if (product.name && product.price) {
       //both values are present -> make the POST request
+      console.log("Adding:", product);
       axios
-        .post(`/dashboard/${_id}`, newProduct)
+        .post(`/dashboard/${_id}`, product)
         .then((response) => {
           console.log(response);
           if (response.status === 200) {
             setUser(response.data);
-            alert("Product " + newProduct.name + " added successfuly!");
-            setNewProduct({ name: "", description: "", price: "" });
+            alert("Product '" + product.name + "' added successfuly!");
+            discardProduct();
           }
         })
         .catch((err) => {
@@ -82,17 +97,19 @@ export default function Dashboard() {
   };
 
   const Edit = (prod) => {
-    console.log("Should show Modal for id:", prod._id);
-    setEditProduct(prod);
+    console.log("Should show Modal for product id:", prod._id);
+    setProduct(prod);
     setShow(true);
   };
   const confirmEdit = () => {
     if (window.confirm("Are you sure you made the correct updates?")) {
+      delete product.uploadDate;
+      console.log("UPDATING:", product);
       axios({
         method: "put",
         url: `/dashboard/${urlparams._id}`,
         data: {
-          product: editProduct,
+          product: product,
         },
       })
         .then((response) => {
@@ -101,11 +118,31 @@ export default function Dashboard() {
           alert("Product Updated Successfuly!");
           setShow(false);
           updateUserData();
+          discardProduct();
         })
         .catch((err) => console.log(err));
     }
   };
 
+  const getMessages = () => {
+    axios
+      .get(`/dashboard/${urlparams._id}/messages`)
+      .then((response) => console.log(response.data))
+      .catch((error) => console.log(error));
+  };
+  const sendMessage = () => {
+    axios
+      .post(`/dashboard/${urlparams._id}/messages`, newMessage)
+      .then((response) => {
+        console.log(response.data);
+        setNewMessage({
+          userId: "",
+          message: "",
+          date: "",
+        });
+      })
+      .catch((error) => console.log(error));
+  };
   return (
     <div>
       <Modal
@@ -115,12 +152,12 @@ export default function Dashboard() {
         aria-labelledby="edit-modal"
       >
         <Modal.Header closeButton>
-          <Modal.Title id="edit-modal">Edit: {editProduct.name}</Modal.Title>
+          <Modal.Title id="edit-modal">Edit: {product.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <label htmlFor="id">Product ID:</label>
           <p name="id" className="p-0 mb-2">
-            <i>{editProduct._id}</i>
+            <i>{product._id}</i>
           </p>
           <label htmlFor="name">Product Name:</label>
           <br />
@@ -128,9 +165,13 @@ export default function Dashboard() {
             name="name"
             className="w-100 p-2"
             type="text"
-            value={editProduct.name}
+            value={product.name}
             onChange={(e) =>
-              setEditProduct({ ...editProduct, name: e.target.value })
+              setProduct({
+                ...product,
+                name: e.target.value,
+                lastUpdated: Date(),
+              })
             }
           />
           <br />
@@ -139,9 +180,13 @@ export default function Dashboard() {
           <textarea
             name="description"
             className="w-100 p-2"
-            value={editProduct.description}
+            value={product.description}
             onChange={(e) =>
-              setEditProduct({ ...editProduct, description: e.target.value })
+              setProduct({
+                ...product,
+                description: e.target.value,
+                lastUpdated: Date(),
+              })
             }
           />
           <br />
@@ -151,9 +196,29 @@ export default function Dashboard() {
             name="price"
             className="w-100 p-2"
             type="number"
-            value={editProduct.price}
+            value={product.price}
             onChange={(e) =>
-              setEditProduct({ ...editProduct, price: e.target.value })
+              setProduct({
+                ...product,
+                price: e.target.value,
+                lastUpdated: Date(),
+              })
+            }
+          />
+          <br />
+          <label htmlFor="discountedPrice">Discounted Price:</label>
+          <br />
+          <input
+            name="discountedPrice"
+            className="w-100 p-2"
+            type="number"
+            value={product.discountedPrice}
+            onChange={(e) =>
+              setProduct({
+                ...product,
+                discountedPrice: e.target.value,
+                lastUpdated: Date(),
+              })
             }
           />
           <br />
@@ -162,7 +227,7 @@ export default function Dashboard() {
           <Button
             className="btn btn-danger"
             onClick={() => {
-              setEditProduct("");
+              setProduct("");
               setShow(false);
             }}
           >
@@ -185,7 +250,11 @@ export default function Dashboard() {
               <Nav.Item>
                 <Nav.Link eventKey="add-new">Add a new product</Nav.Link>
               </Nav.Item>
-
+              <Nav.Item>
+                <Nav.Link eventKey="messages" onClick={() => getMessages()}>
+                  View Messages
+                </Nav.Link>
+              </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="profile-settings">
                   Profile Settings
@@ -197,47 +266,66 @@ export default function Dashboard() {
             <Tab.Content>
               <Tab.Pane eventKey="view-all">
                 <h1 className="text-center">Your products</h1>
-                <div className="d-flex flex-wrap justify-content-center">
-                  {user.products && user.products.length > 0 ? (
-                    user.products.map((prod) => {
-                      return (
-                        <Card
-                          className="w-25 m-3"
-                          key={prod._id}
-                          style={{ minWidth: "250px" }}
-                        >
-                          <Card.Body>
-                            <Card.Title>
-                              {prod.name} (${prod.price})
-                            </Card.Title>
-                            <Card.Subtitle className="mb-2 text-muted">
-                              {prod._id}
-                            </Card.Subtitle>
-                            <Card.Text>{prod.description}</Card.Text>
-                            <div className="w-100 p-3 m-0 d-l-flex d-block justify-content-between text-center">
-                              <Button
-                                variant="primary"
-                                className="m-2"
-                                onClick={() => Edit(prod)}
-                              >
-                                Edit
-                              </Button>
-                              <Button
-                                variant="danger"
-                                className="mx-2"
-                                onClick={() => deleteProduct(prod._id)}
-                              >
-                                Delete
-                              </Button>
-                            </div>
-                          </Card.Body>
-                        </Card>
-                      );
-                    })
-                  ) : (
-                    <h3 className="m-auto pt-5">No Products Added Yet</h3>
-                  )}
-                </div>
+
+                {user.products && user.products.length > 0 ? (
+                  user.products.map((prod) => {
+                    return (
+                      <div
+                        key={prod._id}
+                        className="border border-blue shadow-lg m-5 p-5"
+                      >
+                        <div className="d-flex flex-wrap justify-content-between">
+                          <h3>{prod.name}</h3>
+                          <p className="muted d-flex justify-content-center align-items-center m-0">
+                            <i>Product ID: {prod._id}</i>
+                          </p>
+                        </div>
+                        <div className="d-flex flex-wrap justify-content-between">
+                          <p>
+                            Date Uploaded:
+                            <i> {new Date(prod.uploadDate).toLocaleString()}</i>
+                          </p>
+                          <p>
+                            Last Modified:
+                            <i>
+                              {" "}
+                              {new Date(prod.lastUpdated).toLocaleString()}
+                            </i>
+                          </p>
+                        </div>
+
+                        <p>
+                          Description: <br />
+                          {prod.description}
+                        </p>
+                        <div className="d-flex flex-wrap justify-content-around">
+                          <p>Price: ${prod.price}</p>
+                          {prod.discountedPrice && (
+                            <p>Discounted Price: ${prod.discountedPrice}</p>
+                          )}
+                        </div>
+                        <div className="d-flex flex-wrap justify-content-between align-items-center">
+                          <Button
+                            variant="primary"
+                            className="m-2"
+                            onClick={() => Edit(prod)}
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            variant="danger"
+                            className="mx-2"
+                            onClick={() => deleteProduct(prod._id)}
+                          >
+                            Delete
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <h3 className="m-auto pt-5">No Products Added Yet</h3>
+                )}
               </Tab.Pane>
               <Tab.Pane eventKey="add-new">
                 <h1 className="text-center">Add a new Product</h1>
@@ -247,9 +335,14 @@ export default function Dashboard() {
                     <Form.Control
                       type="text"
                       placeholder="Enter Product Name"
-                      value={newProduct.name}
+                      value={product.name}
                       onChange={(e) =>
-                        setNewProduct({ ...newProduct, name: e.target.value })
+                        setProduct({
+                          ...product,
+                          name: e.target.value,
+                          uploadDate: Date(),
+                          lastUpdated: Date(),
+                        })
                       }
                     />
                   </Form.Group>
@@ -259,11 +352,13 @@ export default function Dashboard() {
                       as="textarea"
                       rows={3}
                       placeholder="Enter Product Description"
-                      value={newProduct.description}
+                      value={product.description}
                       onChange={(e) =>
-                        setNewProduct({
-                          ...newProduct,
+                        setProduct({
+                          ...product,
                           description: e.target.value,
+                          uploadDate: Date(),
+                          lastUpdated: Date(),
                         })
                       }
                     />
@@ -277,11 +372,35 @@ export default function Dashboard() {
                       <Form.Control
                         type="number"
                         placeholder="Enter Product Price"
-                        value={newProduct.price}
+                        value={product.price}
                         onChange={(e) =>
-                          setNewProduct({
-                            ...newProduct,
+                          setProduct({
+                            ...product,
                             price: e.target.value,
+                            uploadDate: Date(),
+                            lastUpdated: Date(),
+                          })
+                        }
+                      />
+                    </InputGroup>
+                  </Form.Group>
+                  <Form.Group controlId="product-discounted-price">
+                    <Form.Label>Discounted Price:</Form.Label>
+                    <InputGroup>
+                      <InputGroup.Prepend>
+                        <InputGroup.Text>$</InputGroup.Text>
+                      </InputGroup.Prepend>
+                      <Form.Control
+                        type="number"
+                        placeholder="Enter New (Discounted) Product Price"
+                        value={product.discountedPrice}
+                        default="0"
+                        onChange={(e) =>
+                          setProduct({
+                            ...product,
+                            discountedPrice: e.target.value,
+                            uploadDate: Date(),
+                            lastUpdated: Date(),
                           })
                         }
                       />
@@ -291,16 +410,14 @@ export default function Dashboard() {
                     <Button
                       className="btn btn-danger"
                       onClick={() => {
-                        discardInput();
+                        discardProduct();
                       }}
                     >
                       Discard Input
                     </Button>
                     <Button
                       className="btn btn-success"
-                      onClick={() => {
-                        addNewProduct();
-                      }}
+                      onClick={() => addproduct()}
                     >
                       Add new product
                     </Button>
@@ -308,11 +425,43 @@ export default function Dashboard() {
                   {}
                 </Form>
               </Tab.Pane>
-              <Tab.Pane eventKey="edit-product">
-                <p>asdasd</p>
-              </Tab.Pane>
               <Tab.Pane eventKey="profile-settings">
-                <p>asdasd</p>
+                <h1 className="text-center">Profile Settings</h1>
+                <div className="d-flex flex-wrap justify-content-center">
+                  <Form className="w-50">
+                    <div className="d-flex flex-wrap justify-content-center">
+                      <Form.Group controlId="_id" className="w-50">
+                        <Form.Label>
+                          <i>Profile ID</i>
+                        </Form.Label>
+                        <Form.Control value={user._id} readOnly />
+                      </Form.Group>
+                      <Form.Group className="w-50">
+                        <Form.Label>
+                          <i>Register Date</i>
+                        </Form.Label>
+                        <Form.Control
+                          value={new Date(user.registrationDate).toUTCString()}
+                          readOnly
+                        />
+                      </Form.Group>
+                    </div>
+                    <Form.Group controlId="username">
+                      <Form.Label>Username</Form.Label>
+                      <Form.Control
+                        value={user.username}
+                        readOnly
+                      ></Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="email">
+                      <Form.Label>Email</Form.Label>
+                      <Form.Control value={user.email} readOnly></Form.Control>
+                    </Form.Group>
+                  </Form>
+                </div>
+              </Tab.Pane>
+              <Tab.Pane eventKey="messages">
+                <h1>Messages</h1>
               </Tab.Pane>
             </Tab.Content>
           </Col>
