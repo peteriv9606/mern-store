@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const urlEncodedParser = bodyParser.urlencoded();
 const bcrypt = require("bcrypt");
-const UserModel = require("../models/UserModel");
+const UserModel = require("../models/UserModel.js");
 module.exports = (app) => {
   app.post("/login", urlEncodedParser, async (req, res) => {
     console.log("POST /login");
