@@ -13,14 +13,16 @@ import { useParams } from "react-router";
 import axios from "axios";
 export default function Dashboard() {
   const { _id } = useParams();
+  const urlparams = useParams();
   const [user, setUser] = useState("");
   const [show, setShow] = useState(false);
+
   const [newMessage, setNewMessage] = useState({
     userId: "",
     message: "",
     date: "",
   });
-  //define state for new product
+
   const [product, setProduct] = useState({
     name: "",
     description: "",
@@ -30,25 +32,20 @@ export default function Dashboard() {
     lastUpdated: null,
   });
 
-  const urlparams = useParams();
-
-  useEffect(() => {
-    //triggered on inital load
-    updateUserData();
-  }, []);
-  const updateUserData = () => {
-    // FIX THIS  : try using useParams
+  const getUserData = () => {
     axios
       .get(`/dashboard/${urlparams._id}`, {
+        //i use the params to validate that user is logged in.. if not - should show just the user profile (unregistered user behaviour)
         params: {
           loggedIn: localStorage.getItem("loggedIn"),
+          user_id: localStorage.getItem("user_id"),
         },
       })
       .then((res) => {
-        console.log(res.data);
         setUser(res.data);
       });
   };
+
   const discardProduct = () => {
     setProduct({
       name: "",
@@ -59,14 +56,13 @@ export default function Dashboard() {
       lastUpdated: "",
     });
   };
+
   const addproduct = () => {
     if (product.name && product.price) {
       //both values are present -> make the POST request
-      console.log("Adding:", product);
       axios
         .post(`/dashboard/${_id}`, product)
         .then((response) => {
-          console.log(response);
           if (response.status === 200) {
             setUser(response.data);
             alert("Product '" + product.name + "' added successfuly!");
@@ -89,7 +85,6 @@ export default function Dashboard() {
         },
       })
         .then((response) => {
-          console.log(response);
           setUser(response.data);
         })
         .catch((err) => console.log(err));
@@ -97,14 +92,13 @@ export default function Dashboard() {
   };
 
   const Edit = (prod) => {
-    console.log("Should show Modal for product id:", prod._id);
     setProduct(prod);
     setShow(true);
   };
+
   const confirmEdit = () => {
     if (window.confirm("Are you sure you made the correct updates?")) {
       delete product.uploadDate;
-      console.log("UPDATING:", product);
       axios({
         method: "put",
         url: `/dashboard/${urlparams._id}`,
@@ -113,11 +107,10 @@ export default function Dashboard() {
         },
       })
         .then((response) => {
-          console.log(response.data);
           setUser(response.data);
           alert("Product Updated Successfuly!");
           setShow(false);
-          updateUserData();
+          getUserData();
           discardProduct();
         })
         .catch((err) => console.log(err));
@@ -130,6 +123,7 @@ export default function Dashboard() {
       .then((response) => console.log(response.data))
       .catch((error) => console.log(error));
   };
+
   const sendMessage = () => {
     axios
       .post(`/dashboard/${urlparams._id}/messages`, newMessage)
@@ -143,6 +137,12 @@ export default function Dashboard() {
       })
       .catch((error) => console.log(error));
   };
+
+  useEffect(() => {
+    //triggered on inital load
+    getUserData();
+  }, []);
+
   return (
     <div>
       <Modal
@@ -243,7 +243,7 @@ export default function Dashboard() {
           <Col sm={3} className="p-0 text-center border-right border-light">
             <Nav className="flex-column">
               <Nav.Item>
-                <Nav.Link eventKey="view-all" onClick={() => updateUserData()}>
+                <Nav.Link eventKey="view-all" onClick={() => getUserData()}>
                   View all your products
                 </Nav.Link>
               </Nav.Item>

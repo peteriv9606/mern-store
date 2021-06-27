@@ -26,12 +26,11 @@ mongoose.connect(
   }
 );
 //API
-require("./routes/user")(app);
-require("./routes/dashboard")(app);
 require("./routes/login")(app);
 require("./routes/register")(app);
+require("./routes/user")(app);
+require("./routes/dashboard")(app);
 require("./routes/products")(app);
-require("./routes/product")(app);
 require("./routes/message")(app);
 
 // Accessing the path module

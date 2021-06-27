@@ -4,10 +4,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import "../App.css";
 function Products(props) {
-  const handleProductClick = (user, prod) => {
-    console.log("CLICKED");
-    props.handleProductClick(user, prod);
-  };
   const [usersWithProds, setusersWithProds] = useState(null);
   const [filter, setFilter] = useState(props.filter);
 
@@ -36,7 +32,7 @@ function Products(props) {
             return (
               // eslint-disable-next-line jsx-a11y/anchor-is-valid
               <Link
-                to={`/product/${prod._id}`}
+                to={`/products/${prod._id}`}
                 className="product"
                 key={prod._id}
               >
@@ -96,12 +92,18 @@ function Products(props) {
         });
       })
     ) : (
-      <Spinner animation="border" role="status" size="lg">
-        <span className="sr-only">Loading...</span>
-      </Spinner>
+      <div className="d-flex flex-wrap justify-content-center align-items-center h-100">
+        <Spinner animation="border" role="status" size="lg">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </div>
     );
   } catch (err) {
-    return <div>No products to show</div>;
+    return (
+      <div className="d-flex flex-wrap justify-content-center align-items-center h-100">
+        <h1>No Products to show... :(</h1>
+      </div>
+    );
   }
 }
 

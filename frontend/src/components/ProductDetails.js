@@ -7,19 +7,13 @@ function Product() {
   const { _id } = useParams();
   const [owner, setOwner] = useState(null);
   useEffect(() => {
-    console.log("useEffect run in Product.js. ID:", _id);
     axios
-      .get(`/product/${_id}`)
-      .then((response) => {
-        console.log(response.data);
-        setOwner(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      .get(`/products/${_id}`)
+      .then((response) => setOwner(response.data))
+      .catch((error) => console.log(error));
   }, []);
   return (
-    <div>
+    <>
       {owner ? (
         owner != "Not found" ? (
           <>
@@ -110,11 +104,13 @@ function Product() {
           </>
         )
       ) : (
-        <Spinner animation="border" role="status" size="lg">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <div className="d-flex flex-wrap justify-content-center align-items-center h-100">
+          <Spinner animation="border" role="status" size="lg">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 

@@ -5,17 +5,36 @@ const UserModel = require("../models/UserModel");
 module.exports = (app) => {
   app
     .route("/dashboard/:_id")
-    .get((req, res) => {
+    .get(async (req, res) => {
       console.log("GET /dashboard/:_id");
       console.log(req.query, req.params);
       if (req.query && req.query.loggedIn === "true") {
-        UserModel.findById(req.params._id, (err, user) => {
-          if (err) {
-            console.error(err);
-            return 0;
-          }
-          if (user) res.send(user);
-        });
+        if (req.query.user_id === req.params._id) {
+          //user is logged in and accessing his own profile
+          const user = await UserModel.findById(req.params._id, (err, user) => {
+            if (err) {
+              console.error(err);
+              return 0;
+            }
+            if (user) return user;
+          });
+          res.send(user);
+        } else {
+          //user is logged in, but he is accessing another profile
+          //MAKE THIS RETURN A PROFILE PAGE OF THE OTHER USER !!!!!!
+          //For now, we will just return the same users' dashboard
+          const user = await UserModel.findById(
+            req.query.user_id,
+            (err, user) => {
+              if (err) {
+                console.error(err);
+                return 0;
+              }
+              if (user) return user;
+            }
+          );
+          res.send(user);
+        }
       } else res.redirect("/");
     })
     .post((req, res) => {

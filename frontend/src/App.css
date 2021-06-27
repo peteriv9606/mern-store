@@ -9,6 +9,10 @@
   color: white;
 }
 
+.content-wrapper {
+  height: calc(100vh - 60px);
+}
+
 .products-list {
   display: flex;
   flex-wrap: wrap;

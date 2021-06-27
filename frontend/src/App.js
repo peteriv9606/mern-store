@@ -1,52 +1,65 @@
-import { useState, useEffect } from "react";
-import { InputGroup, FormControl } from "react-bootstrap";
 import "./App.css";
-import Products from "./components/Products";
-import Product from "./components/Product";
-import { Modal, Button } from "react-bootstrap";
+import Home from "./components/Home";
+import ProductDetails from "./components/ProductDetails";
+import Navigation from "./components/Navigation";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import NoEntry from "./components/NoEntry";
+import Dashboard from "./components/Dashboard";
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 function App() {
-  const [filter, setFilter] = useState("");
-  const [show, setShow] = useState(false);
-  const [user, setUser] = useState(null);
-  const [product, setProduct] = useState(null);
-
-  const handleProductClick = (user, prod) => {
-    console.log("Clicked on product ", user, prod);
-    setUser(user);
-    setProduct(prod);
-  };
-
   return (
-    <div className="App">
-      {product ? (
-        <Product />
-      ) : (
-        <>
-          <InputGroup className="m-auto py-3 w-75 d-flex">
-            <InputGroup.Prepend>
-              <InputGroup.Text id="prepend-desc">
-                Filter by Name:
-              </InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl
-              placeholder="Name"
-              aria-label="Name"
-              aria-describedby="prepend-desc"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            />
-          </InputGroup>
-          <div className="products-list">
-            <Products
-              filter={filter}
-              handleProductClick={(user, prod) =>
-                handleProductClick(user, prod)
-              }
-            />
-          </div>
-        </>
-      )}
-    </div>
+    <Router>
+      <div className="App">
+        <Navigation />
+        <div className="content-wrapper">
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route path="/products/:_id">
+              <ProductDetails />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/logout">
+              <Redirect to="/" />
+            </Route>
+            {window.localStorage.getItem("loggedIn") ? (
+              <>
+                <Route exact path="/dashboard">
+                  {localStorage.getItem("user_id") ? (
+                    <Redirect
+                      to={`/dashboard/${localStorage.getItem("user_id")}`}
+                    />
+                  ) : (
+                    <NoEntry />
+                  )}
+                </Route>
+                <Route exact path={`/dashboard/:_id`}>
+                  <Dashboard />
+                </Route>
+              </>
+            ) : (
+              <Redirect to="/" />
+            )}
+            <Route path="*">
+              <NoEntry />
+            </Route>
+          </Switch>
+        </div>
+      </div>
+    </Router>
   );
 }
 
