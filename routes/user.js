@@ -3,8 +3,8 @@ const router = express.Router();
 const UserModel = require("../UserModel");
 
 module.exports = (app) => {
-  app.get("/user/:_id", (req, res) => {
-    console.log(req.params);
+  app.get("/api/user/:_id", (req, res) => {
+    console.log("GET /api/user/:_id", req.params);
     UserModel.findById(req.params._id, (err, user) => {
       if (err) console.error(err);
       else {

@@ -13,7 +13,7 @@ export default function Login() {
   const handleFormSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("/login", input)
+      .post("/api/login", input)
       .then(setIsLoading(true))
       .then((res) => {
         setIsLoading(false);

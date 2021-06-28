@@ -8,7 +8,7 @@ function Product() {
   const [owner, setOwner] = useState(null);
   useEffect(() => {
     axios
-      .get(`/products/${_id}`)
+      .get(`/api/products/${_id}`)
       .then((response) => setOwner(response.data))
       .catch((error) => console.log(error));
   }, []);

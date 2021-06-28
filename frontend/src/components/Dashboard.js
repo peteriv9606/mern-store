@@ -34,7 +34,7 @@ export default function Dashboard() {
 
   const getUserData = () => {
     axios
-      .get(`/dashboard/${urlparams._id}`, {
+      .get(`/api/dashboard/${urlparams._id}`, {
         //i use the params to validate that user is logged in.. if not - should show just the user profile (unregistered user behaviour)
         params: {
           loggedIn: localStorage.getItem("loggedIn"),
@@ -61,7 +61,7 @@ export default function Dashboard() {
     if (product.name && product.price) {
       //both values are present -> make the POST request
       axios
-        .post(`/dashboard/${_id}`, product)
+        .post(`/api/dashboard/${_id}`, product)
         .then((response) => {
           if (response.status === 200) {
             setUser(response.data);
@@ -79,7 +79,7 @@ export default function Dashboard() {
     if (window.confirm("Are you sure you want to delete this item?")) {
       axios({
         method: "delete",
-        url: `/dashboard/${urlparams._id}`,
+        url: `/api/dashboard/${urlparams._id}`,
         data: {
           product_id: id,
         },
@@ -101,7 +101,7 @@ export default function Dashboard() {
       delete product.uploadDate;
       axios({
         method: "put",
-        url: `/dashboard/${urlparams._id}`,
+        url: `/api/dashboard/${urlparams._id}`,
         data: {
           product: product,
         },
@@ -119,14 +119,14 @@ export default function Dashboard() {
 
   const getMessages = () => {
     axios
-      .get(`/dashboard/${urlparams._id}/messages`)
+      .get(`/api/dashboard/${urlparams._id}/messages`)
       .then((response) => console.log(response.data))
       .catch((error) => console.log(error));
   };
 
   const sendMessage = () => {
     axios
-      .post(`/dashboard/${urlparams._id}/messages`, newMessage)
+      .post(`/api/dashboard/${urlparams._id}/messages`, newMessage)
       .then((response) => {
         console.log(response.data);
         setNewMessage({

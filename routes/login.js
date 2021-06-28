@@ -5,8 +5,8 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../UserModel");
 
 module.exports = (app) => {
-  app.post("/login", urlEncodedParser, async (req, res) => {
-    console.log("POST /login");
+  app.post("/api/login", urlEncodedParser, async (req, res) => {
+    console.log("POST /api/login");
     const user = await UserModel.findOne({ username: req.body.username });
     if (user) {
       const isValidPass = await bcrypt.compare(

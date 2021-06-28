@@ -12,7 +12,7 @@ function Navigation() {
     if (localStorage.getItem("user_id") && localStorage.getItem("loggedIn")) {
       //checking logged in state
       axios
-        .get("/user/" + localStorage.getItem("user_id"))
+        .get("/api/user/" + localStorage.getItem("user_id"))
         .then((res) => {
           setUser(res.data);
         })

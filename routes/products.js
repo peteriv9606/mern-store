@@ -4,7 +4,8 @@ const urlEncodedParser = bodyParser.urlencoded();
 const UserModel = require("../UserModel");
 
 module.exports = (app) => {
-  app.get("/products/:_id", urlEncodedParser, async (req, res) => {
+  app.use(urlEncodedParser);
+  app.get("/api/products/:_id", async (req, res) => {
     console.log("GET /products/:_id");
 
     userProd = new UserModel();
@@ -31,7 +32,7 @@ module.exports = (app) => {
       res.send(product[0]);
     } else res.status(200).send("Not found");
   });
-  app.get("/products/", urlEncodedParser, async (req, res) => {
+  app.get("/api/products/", async (req, res) => {
     //get all products from all users
     console.log("GET /products");
     const usersWithProducts = await UserModel.find({}, (err, user) => {

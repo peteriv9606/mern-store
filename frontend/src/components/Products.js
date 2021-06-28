@@ -9,7 +9,7 @@ function Products(props) {
 
   useEffect(() => {
     axios
-      .get("/products")
+      .get("/api/products")
       .then((response) => {
         setusersWithProds([...response.data]);
       })

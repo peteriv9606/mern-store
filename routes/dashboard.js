@@ -4,9 +4,9 @@ const UserModel = require("../UserModel");
 
 module.exports = (app) => {
   app
-    .route("/dashboard/:_id")
+    .route("/api/dashboard/:_id")
     .get(async (req, res) => {
-      console.log("GET /dashboard/:_id");
+      console.log("GET /api/dashboard/:_id");
       console.log(req.query, req.params);
       if (req.query && req.query.loggedIn === "true") {
         if (req.query.user_id === req.params._id) {
@@ -39,7 +39,7 @@ module.exports = (app) => {
     })
     .post((req, res) => {
       //Add new product to current user's products array
-      console.log("POST /dashboard/:_id");
+      console.log("POST /api/dashboard/:_id");
       console.log(req.body, req.params);
       //req.params - gets current user's _id
       //req.body - gets new item values
@@ -57,7 +57,7 @@ module.exports = (app) => {
     })
     .delete((req, res) => {
       //Delete selected product
-      console.log("DELETE /dashboard/:_id");
+      console.log("DELETE /api/dashboard/:_id");
       UserModel.findByIdAndUpdate(
         req.params._id,
         { $pull: { products: { _id: req.body.product_id } } },
@@ -71,7 +71,7 @@ module.exports = (app) => {
       );
     })
     .put((req, res) => {
-      console.log("PUT /dashboard/:id");
+      console.log("PUT /api/dashboard/:id");
       console.log(req.body, req.params);
       const product = req.body.product;
       UserModel.findById(req.params._id, (err, user) => {

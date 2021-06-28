@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 const UserModel = require("../UserModel");
 
 module.exports = (app) => {
-  app.post("/register", urlEncodedParser, async (req, res) => {
+  app.post("/api/register", urlEncodedParser, async (req, res) => {
     console.log("POST /register");
     const existingUser = await UserModel.findOne({
       username: req.body.username,

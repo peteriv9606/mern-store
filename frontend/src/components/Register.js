@@ -22,7 +22,7 @@ export default function Register() {
     if (isValidForm.state) {
       console.log("FORM IS VALID");
       axios
-        .post("/register", input)
+        .post("/api/register", input)
         .then(setIsLoading(true))
         .then((res) => {
           if (res) {
