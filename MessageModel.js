@@ -1,3 +1,3 @@
 const mongoose = require("mongoose");
-const MessageSchema = require("../schemas/MessageSchema");
+const MessageSchema = require("./MessageSchema");
 module.exports = mongoose.model("Message", MessageSchema, "users");
