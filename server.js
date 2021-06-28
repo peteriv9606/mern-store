@@ -6,15 +6,13 @@ var bodyParser = require("body-parser");
 
 require("dotenv/config");
 
-const MONGO_URI =
-  "mongodb+srv://admin:admin@maincluster.xxs1n.mongodb.net/mern-store?retryWrites=true&w=majority";
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 mongoose.connect(
-  MONGO_URI,
+  process.env.MONGO_URI,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
