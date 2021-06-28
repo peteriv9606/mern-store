@@ -15,6 +15,9 @@ export default function Dashboard() {
   const { _id } = useParams();
   const urlparams = useParams();
   const [user, setUser] = useState("");
+  const [profileChanges, setProfileChanges] = useState("");
+  const [profileChangesSRVResponse, setProfileChangesSRVResponse] =
+    useState(null);
   const [show, setShow] = useState(false);
 
   const [newMessage, setNewMessage] = useState({
@@ -43,6 +46,7 @@ export default function Dashboard() {
       })
       .then((res) => {
         setUser(res.data);
+        setProfileChanges(res.data);
       });
   };
 
@@ -142,6 +146,32 @@ export default function Dashboard() {
     //triggered on inital load
     getUserData();
   }, []);
+
+  useEffect(() => {
+    console.log(profileChanges);
+  }, [profileChanges]);
+  const handleEditProfile = (e) => {
+    e.preventDefault();
+    if (profileChanges.newPassword == profileChanges.repNewPassword) {
+      //passwords match - check if old password is the same as current pass
+      axios
+        .put(`/api/user/${user._id}/update`, profileChanges)
+        .then((response) => {
+          setUser(response.data);
+          setProfileChanges({
+            ...profileChanges,
+            username: response.data.username,
+            fullName: response.data.fullName,
+            email: response.data.email,
+            currentPassword: "",
+            newPassword: "",
+            repNewPassword: "",
+          });
+          alert("Profile Data Updated Successfuly!");
+        })
+        .catch((error) => console.log(error));
+    } else console.log("PASSWORD MISSMATCH");
+  };
 
   return (
     <div>
@@ -434,28 +464,104 @@ export default function Dashboard() {
                         <Form.Label>
                           <i>Profile ID</i>
                         </Form.Label>
-                        <Form.Control value={user._id} readOnly />
+                        <Form.Control value={profileChanges._id} readOnly />
                       </Form.Group>
                       <Form.Group className="w-50">
                         <Form.Label>
                           <i>Register Date</i>
                         </Form.Label>
                         <Form.Control
-                          value={new Date(user.registrationDate).toUTCString()}
+                          value={new Date(
+                            profileChanges.registrationDate
+                          ).toUTCString()}
                           readOnly
                         />
                       </Form.Group>
                     </div>
+                    <Form.Group controlId="name">
+                      <Form.Label>Full Name</Form.Label>
+                      <Form.Control
+                        value={profileChanges.fullName}
+                        onChange={(e) =>
+                          setProfileChanges({
+                            ...profileChanges,
+                            fullName: e.target.value,
+                          })
+                        }
+                      ></Form.Control>
+                    </Form.Group>
                     <Form.Group controlId="username">
                       <Form.Label>Username</Form.Label>
                       <Form.Control
-                        value={user.username}
+                        value={profileChanges.username}
                         readOnly
                       ></Form.Control>
                     </Form.Group>
                     <Form.Group controlId="email">
                       <Form.Label>Email</Form.Label>
-                      <Form.Control value={user.email} readOnly></Form.Control>
+                      <Form.Control
+                        value={profileChanges.email}
+                        onChange={(e) =>
+                          setProfileChanges({
+                            ...profileChanges,
+                            email: e.target.value,
+                          })
+                        }
+                      ></Form.Control>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Change Password</Form.Label>
+                      <Form.Control
+                        placeholder="Current Password"
+                        className="my-2"
+                        type="password"
+                        value={profileChanges.currentPassword}
+                        onChange={(e) =>
+                          setProfileChanges({
+                            ...profileChanges,
+                            currentPassword: e.target.value,
+                          })
+                        }
+                      ></Form.Control>
+                      <Form.Control
+                        placeholder="New Password"
+                        className="my-2"
+                        type="password"
+                        value={profileChanges.newPassword}
+                        onChange={(e) =>
+                          setProfileChanges({
+                            ...profileChanges,
+                            newPassword: e.target.value,
+                          })
+                        }
+                      ></Form.Control>
+                      <Form.Control
+                        placeholder="Retype New Password"
+                        className="my-2"
+                        type="password"
+                        value={profileChanges.repNewPassword}
+                        onChange={(e) =>
+                          setProfileChanges({
+                            ...profileChanges,
+                            repNewPassword: e.target.value,
+                          })
+                        }
+                      ></Form.Control>
+                    </Form.Group>
+                    <Form.Group className="d-flex flex-wrap justify-content-between">
+                      <Button
+                        className="btn btn-danger"
+                        onClick={() => setProfileChanges(user)}
+                      >
+                        Discard Changes
+                      </Button>
+                      <Button
+                        type="submit"
+                        className="btn btn-success"
+                        onClick={(e) => handleEditProfile(e)}
+                      >
+                        Save Changes
+                      </Button>
                     </Form.Group>
                   </Form>
                 </div>
