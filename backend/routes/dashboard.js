@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const UserModel = require("../models/UserModel");
+const UserModel = require("../UserModel");
 
 module.exports = (app) => {
   app

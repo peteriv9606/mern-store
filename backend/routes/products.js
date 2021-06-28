@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const urlEncodedParser = bodyParser.urlencoded();
-const UserModel = require("../models/UserModel");
+const UserModel = require("../UserModel");
 
 module.exports = (app) => {
   app.get("/products/:_id", urlEncodedParser, async (req, res) => {

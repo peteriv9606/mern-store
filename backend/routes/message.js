@@ -1,7 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const urlEncodedParser = bodyParser.urlencoded();
-const UserModel = require("../models/UserModel");
+const UserModel = require("../UserModel");
+
 module.exports = (app) => {
   app.get("/dashboard/:_id/messages", urlEncodedParser, async (req, res) => {
     console.log("GET /messages");

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const ProductSchema = require("../schemas/ProductSchema");
-const MessageSchema = require("../schemas/MessageSchema");
+const ProductSchema = require("./ProductSchema");
+const MessageSchema = require("./MessageSchema");
 
 const UserSchema = Schema({
   fullName: String,
