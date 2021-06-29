@@ -17,20 +17,20 @@ function Product() {
       {owner ? (
         owner != "Not found" ? (
           <>
-            <div className="row w-100">
-              <div className="col-1 d-flex align-items-center justify-content-center">
+            <div className="d-flex flex-wrap">
+              <div className="col-sm-2 col-12 p-3 d-flex align-items-center justify-content-left">
                 <Button as={Link} to="/" className="btn btn-secondary">
                   Back
                 </Button>
               </div>
               {owner.products[0].name && (
-                <div className="col-11">
+                <div className="col-sm-10 col-12 ">
                   <h1 className="text-center m-3">{owner.products[0].name}</h1>
                 </div>
               )}
             </div>
             <hr />
-            <div className="row flex-wrap justify-content-between mx-3">
+            <div className="d-flex flex-wrap justify-content-between mx-auto w-75">
               {owner.products[0].uploadDate && (
                 <p>
                   <i>
