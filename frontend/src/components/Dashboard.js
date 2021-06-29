@@ -8,6 +8,7 @@ import {
   Form,
   InputGroup,
   Modal,
+  Spinner,
 } from "react-bootstrap";
 import { useParams } from "react-router";
 import axios from "axios";
@@ -16,8 +17,8 @@ export default function Dashboard() {
   const urlparams = useParams();
   const [user, setUser] = useState("");
   const [profileChanges, setProfileChanges] = useState("");
-  const [profileChangesSRVResponse, setProfileChangesSRVResponse] =
-    useState(null);
+  const [isProductUpdating, setIsProductUpdating] = useState(false);
+  const [isProductUpdated, setIsProductUpdated] = useState(false);
   const [show, setShow] = useState(false);
 
   const [newMessage, setNewMessage] = useState({
@@ -110,10 +111,15 @@ export default function Dashboard() {
           product: product,
         },
       })
+        .then(setIsProductUpdating(true))
         .then((response) => {
+          setIsProductUpdating(false);
+          setIsProductUpdated(true);
           setUser(response.data);
-          alert("Product Updated Successfuly!");
-          setShow(false);
+          setTimeout(() => {
+            setShow(false);
+            setIsProductUpdated(false);
+          }, 2000);
           getUserData();
           discardProduct();
         })
@@ -184,75 +190,98 @@ export default function Dashboard() {
         <Modal.Header closeButton>
           <Modal.Title id="edit-modal">Edit: {product.name}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <label htmlFor="id">Product ID:</label>
-          <p name="id" className="p-0 mb-2">
-            <i>{product._id}</i>
-          </p>
-          <label htmlFor="name">Product Name:</label>
-          <br />
-          <input
-            name="name"
-            className="w-100 p-2"
-            type="text"
-            value={product.name}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                name: e.target.value,
-                lastUpdated: Date(),
-              })
-            }
-          />
-          <br />
-          <label htmlFor="description">Product Description:</label>
-          <br />
-          <textarea
-            name="description"
-            className="w-100 p-2"
-            value={product.description}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                description: e.target.value,
-                lastUpdated: Date(),
-              })
-            }
-          />
-          <br />
-          <label htmlFor="price">Product Price:</label>
-          <br />
-          <input
-            name="price"
-            className="w-100 p-2"
-            type="number"
-            value={product.price}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                price: e.target.value,
-                lastUpdated: Date(),
-              })
-            }
-          />
-          <br />
-          <label htmlFor="discountedPrice">Discounted Price:</label>
-          <br />
-          <input
-            name="discountedPrice"
-            className="w-100 p-2"
-            type="number"
-            value={product.discountedPrice}
-            onChange={(e) =>
-              setProduct({
-                ...product,
-                discountedPrice: e.target.value,
-                lastUpdated: Date(),
-              })
-            }
-          />
-          <br />
-        </Modal.Body>
+        {!isProductUpdating ? (
+          //if the product is NOT being currently updated - check if it has already been updated and handle View
+          isProductUpdated ? (
+            //product update has happened - display success message
+            <Modal.Body>
+              <div className="d-flex flex-wrap justify-content-center align-items-center h-100">
+                <h4 style={{ color: "green" }}>
+                  Product Updated Successfully!
+                </h4>
+              </div>
+            </Modal.Body>
+          ) : (
+            //product has not been updated yet - display default behaviour
+            <Modal.Body>
+              <label htmlFor="id">Product ID:</label>
+              <p name="id" className="p-0 mb-2">
+                <i>{product._id}</i>
+              </p>
+              <label htmlFor="name">Product Name:</label>
+              <br />
+              <input
+                name="name"
+                className="w-100 p-2"
+                type="text"
+                value={product.name}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    name: e.target.value,
+                    lastUpdated: Date(),
+                  })
+                }
+              />
+              <br />
+              <label htmlFor="description">Product Description:</label>
+              <br />
+              <textarea
+                name="description"
+                className="w-100 p-2"
+                value={product.description}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    description: e.target.value,
+                    lastUpdated: Date(),
+                  })
+                }
+              />
+              <br />
+              <label htmlFor="price">Product Price:</label>
+              <br />
+              <input
+                name="price"
+                className="w-100 p-2"
+                type="number"
+                value={product.price}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    price: e.target.value,
+                    lastUpdated: Date(),
+                  })
+                }
+              />
+              <br />
+              <label htmlFor="discountedPrice">Discounted Price:</label>
+              <br />
+              <input
+                name="discountedPrice"
+                className="w-100 p-2"
+                type="number"
+                value={product.discountedPrice}
+                onChange={(e) =>
+                  setProduct({
+                    ...product,
+                    discountedPrice: e.target.value,
+                    lastUpdated: Date(),
+                  })
+                }
+              />
+              <br />
+            </Modal.Body>
+          )
+        ) : (
+          //product is BEING updated
+          <div className="d-flex flex-wrap justify-content-center align-items-center h-100">
+            <Spinner animation="border" role="status" size="lg">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </div>
+        )}
+
         <Modal.Footer>
           <Button
             className="btn btn-danger"
